@@ -36,6 +36,9 @@ const Header = (props) => {
             .then(() => {
               dispatch(setSignOutState);
               navigate("/");
+              setTimeout(() => {
+                window.location.reload()
+              }, 500);
             })
             .catch((err) => alert(err.message));
         }
