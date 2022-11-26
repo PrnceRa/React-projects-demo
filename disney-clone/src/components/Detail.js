@@ -12,11 +12,9 @@ const Detail = (props) => {
   useEffect(() => {
     onSnapshot(query(collection(db,"movies")),(snapshot) => {
         snapshot.docs.map((doc) => {
-        if (doc.exists) {
+        if (doc.exists && doc.id===id) {
           setDetailData(doc.data());
-        } else {
-          console.log("no such document in firebase 🔥");
-        }
+        } 
       })
       })
   }, [id]);
