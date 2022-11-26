@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import db from "../firebase";
 import { setMovies } from "../features/movie/movieSlice";
 import { selectUserName } from "../features/user/userSlice";
-import { doc, onSnapshot, collection, query, where } from "firebase/firestore";
+import { onSnapshot, collection, query } from "firebase/firestore";
 
 
 const Home = (props) => {
