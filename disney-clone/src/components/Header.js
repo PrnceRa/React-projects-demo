@@ -1,42 +1,44 @@
 import { useEffect } from "react";
 import styled from "styled-components";
-import { getAuth, signInWithPopup } from "firebase/auth";
-import { provider } from "../firebase";
+import { signInWithPopup, signOut } from "firebase/auth";
+import { provider, auth } from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom"
-import { selectUserName, selectUserEmail, selectUserPhoto, setUserLoginDetails, setSignOutState } from "../features/user/userSlice";
+import { selectUserName, selectUserPhoto, setUserLoginDetails, setSignOutState } from "../features/user/userSlice";
 
 const Header = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const userName = useSelector(selectUserName);
     const userPhoto = useSelector(selectUserPhoto);
-    const auth = getAuth();
-    const handleAuth = () => {
-        signInWithPopup(auth, provider).then(result=>{
-           setUser(result.user);
-        }).catch((error)=>{
-            alert(error.message);
-        })
-    }
 
     useEffect(() => {
-      if(!userName){
-          auth.onAuthStateChanged(async (user)=>{
-              if(user){
-                  setUser(user)
-                  navigate('/home')
-                }
+        auth.onAuthStateChanged(async (user) => {
+          if (user) {
+            setUser(user);
+            navigate('/home');
+          }
+        });
+      }, [userName]);
+    
+      const handleAuth = () => {
+        if (!userName) {
+            signInWithPopup(auth, provider)
+            .then((result) => {
+              setUser(result.user);
             })
-        }else if(userName){
-            auth.signOut().then(()=>{
-                dispatch(setSignOutState())
-                navigate('/')
-            }).catch((err)=>{
-                alert(err.message);
+            .catch((error) => {
+              alert(error.message);
+            });
+        } else if (userName) {
+            signOut(auth)
+            .then(() => {
+              dispatch(setSignOutState());
+              navigate("/");
             })
+            .catch((err) => alert(err.message));
         }
-    }, [userName])
+      };
     
 
     const setUser = (user) => {
